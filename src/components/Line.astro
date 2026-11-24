@@ -1,0 +1,57 @@
+---
+// Renders one bullet's parts: plain text, badges and highlight chips.
+import type { Badge, Highlight, Line } from '../data/profile';
+
+interface Props {
+  parts: Line;
+}
+
+const { parts } = Astro.props;
+
+const isBadge = (p: Line[number]): p is Badge => typeof p === 'object' && 'label' in p;
+const isHighlight = (p: Line[number]): p is Highlight => typeof p === 'object' && 'hl' in p;
+const external = (href?: string) => !!href && href.startsWith('http');
+
+const tintStyle = (badge: Badge) =>
+  [badge.tint && `--tint:${badge.tint}`, badge.darkTint && `--tint-dark:${badge.darkTint}`]
+    .filter(Boolean)
+    .join(';') || undefined;
+---
+
+{
+  parts.map((part) => {
+    if (isBadge(part)) {
+      const Tag = part.href ? 'a' : 'span';
+      return (
+        <Tag
+          class:list={['badge', { tinted: part.tint }]}
+          style={tintStyle(part)}
+          href={part.href}
+          target={external(part.href) ? '_blank' : undefined}
+          rel={external(part.href) ? 'noopener' : undefined}
+        >
+          {part.icon && (
+            <img
+              src={part.icon}
+              alt=""
+              width="16"
+              height="16"
+              style={part.iconBg ? `background:${part.iconBg};padding:1px` : undefined}
+            />
+          )}
+          {part.label}
+        </Tag>
+      );
+    }
+    if (isHighlight(part)) {
+      return part.href ? (
+        <a class="hl" href={part.href}>
+          {part.hl}
+        </a>
+      ) : (
+        <span class="hl">{part.hl}</span>
+      );
+    }
+    return part;
+  })
+}

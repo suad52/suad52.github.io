@@ -1,0 +1,140 @@
+/* One narrow monospace column over the birds. Dark is the default theme; the
+   footer toggle switches to light and remembers it. */
+
+:root {
+  color-scheme: dark;
+  --bg: #050507; /* same as the birds' backgroundColor */
+  --fg: #ececf1;
+  --fg-2: #c4c4cf;
+  --muted: #8b8b99;
+  --line: #24242c;
+  --link-line: #4a4a57;
+  --badge-bg: #0f0f13;
+  --badge-line: #2a2a33;
+  --hl-bg: rgba(46, 160, 67, 0.18);
+  --hl-fg: #56d364;
+  --halo: rgba(5, 5, 7, 0.85);
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+  --bg: #f3f4fa;
+  --fg: #1c1d33;
+  --fg-2: #3a3c58;
+  --muted: #5e6283;
+  --line: #d3d5e6;
+  --link-line: #a9acc6;
+  --badge-bg: #ffffff;
+  --badge-line: #d3d5e6;
+  --hl-bg: #dafbe1;
+  --hl-fg: #1a7f37;
+  --halo: rgba(243, 244, 250, 0.9);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Only the root gets a background: a body background would paint over the
+   birds, which sit at z-index -1. */
+html {
+  background: var(--bg);
+}
+
+body {
+  margin: 0;
+  color: var(--fg);
+  font-family: 'JetBrains Mono Variable', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 14px;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  /* A soft halo keeps text readable when a bird flies behind it. */
+  text-shadow: 0 0 6px var(--halo), 0 0 2px var(--halo);
+}
+
+h1,
+h2,
+p,
+ul {
+  margin: 0;
+}
+
+ul {
+  padding: 0;
+  list-style: none;
+}
+
+a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--link-line);
+  text-underline-offset: 3px;
+}
+
+a:hover {
+  text-decoration-color: currentColor;
+}
+
+:focus-visible {
+  outline: 2px solid #4493f8;
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+/* Badge: a small inline chip with an optional 16px icon, tinted in its org's colour. */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0 6px;
+  margin: 1px 0;
+  border: 1px solid var(--badge-line);
+  border-radius: 6px;
+  background: var(--badge-bg);
+  font-size: 14px;
+  line-height: 22px;
+  white-space: nowrap;
+  vertical-align: baseline;
+  text-decoration: none;
+  text-shadow: none;
+}
+
+a.badge:hover {
+  border-color: var(--muted);
+}
+
+.badge.tinted {
+  --t: var(--tint);
+  background: color-mix(in srgb, var(--t) 16%, var(--badge-bg));
+  border-color: color-mix(in srgb, var(--t) 50%, var(--badge-line));
+}
+
+:root:not([data-theme='light']) .badge.tinted {
+  --t: var(--tint-dark, var(--tint));
+}
+
+a.badge.tinted:hover {
+  border-color: var(--t);
+}
+
+.badge img {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  flex: none;
+}
+
+/* Highlight chip, e.g. "S27 internships" */
+.hl {
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: var(--hl-bg);
+  color: var(--hl-fg);
+  font-weight: 500;
+  text-decoration: none;
+  text-shadow: none;
+}
+
+a.hl:hover {
+  text-decoration: underline;
+}

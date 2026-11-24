@@ -1,0 +1,338 @@
+---
+import Base from '../layouts/Base.astro';
+import Line from '../components/Line.astro';
+import { languages, profile, schools, sections } from '../data/profile';
+
+const slug = (s: string) => 'h-' + s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-$/, '');
+---
+
+<Base title={profile.title} description={profile.description}>
+  <main class="page" id="top">
+    <header class="head">
+      <h1>{profile.name}</h1>
+      <p class="schools"><Line parts={schools} /></p>
+      <nav class="links" aria-label="Contact">
+        <a class="links__email" href={`mailto:${profile.email}`}>{profile.email}</a>
+        {
+          profile.links.map(({ label, href }) => (
+            <a href={href} target="_blank" rel="noopener">
+              {label}
+            </a>
+          ))
+        }
+      </nav>
+    </header>
+
+    {
+      sections.map((section) => (
+        <section aria-labelledby={slug(section.heading)}>
+          <h2 id={slug(section.heading)}>{section.heading}</h2>
+          <ul class="bullets">
+            {section.lines.map((parts) => (
+              <li>
+                <Line parts={parts} />
+              </li>
+            ))}
+          </ul>
+
+          {section.more && (
+            <details class="more">
+              <summary>
+                <span>
+                  {section.more.label} <span class="more__count">({section.more.lines.length})</span>
+                </span>
+              </summary>
+              <ul class="bullets">
+                {section.more.lines.map((parts) => (
+                  <li>
+                    <Line parts={parts} />
+                  </li>
+                ))}
+              </ul>
+            </details>
+          )}
+
+          {section.languages && (
+            <div class="stack" title="Languages across my public repos">
+              <div class="stack__bar" aria-hidden="true">
+                {languages.map((l) => (
+                  <span style={`--c:${l.color};width:${l.pct}%`} />
+                ))}
+              </div>
+              <ul class="stack__legend" aria-label="Languages across my public repos">
+                {languages.map((l) => (
+                  <li>
+                    <span class="lang" style={`--c:${l.color}`}>
+                      {l.name}
+                    </span>{' '}
+                    <span class="pct">{l.pct}%</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </section>
+      ))
+    }
+
+    <footer class="foot">
+      <span>{profile.name}, {new Date().getFullYear()}</span>
+      <span class="foot__right">
+        <button type="button" class="theme" data-theme-toggle>
+          <span class="to-light">light mode</span><span class="to-dark">dark mode</span>
+        </button>
+        <a href="#top">back to top</a>
+      </span>
+    </footer>
+  </main>
+</Base>
+
+<script>
+  const root = document.documentElement;
+  document.querySelector('[data-theme-toggle]')?.addEventListener('click', () => {
+    const next = root.dataset.theme === 'light' ? 'dark' : 'light';
+    if (next === 'light') root.dataset.theme = 'light';
+    else delete root.dataset.theme;
+    try {
+      localStorage.setItem('theme', next);
+    } catch (e) {}
+    document.dispatchEvent(new Event('themechange'));
+  });
+</script>
+
+<style>
+  .page {
+    max-width: 620px;
+    margin: 0 auto;
+    padding: 72px 16px 40px;
+  }
+
+  /* Header */
+  .head {
+    margin-bottom: 40px;
+  }
+
+  h1 {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+
+  .schools {
+    margin-top: 14px;
+  }
+
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 16px;
+    margin-top: 12px;
+  }
+
+  .links a {
+    color: var(--muted);
+  }
+
+  .links a:hover {
+    color: var(--fg);
+  }
+
+  .links .links__email {
+    color: var(--fg);
+    text-decoration-color: var(--muted);
+  }
+
+  /* Sections */
+  section {
+    margin-bottom: 36px;
+  }
+
+  h2 {
+    margin-bottom: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--muted);
+  }
+
+  .bullets li {
+    padding-left: 18px;
+    margin-bottom: 10px;
+  }
+
+  /* Inline (not absolutely positioned) so the dash sits on the first line's
+     baseline even when a badge makes that line taller. */
+  .bullets li::before {
+    content: '-';
+    display: inline-block;
+    width: 18px;
+    margin-left: -18px;
+    padding-left: 2px;
+    color: var(--muted);
+  }
+
+  /* "more games" dropdown */
+  .more summary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding-left: 2px;
+    color: var(--muted);
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+  }
+
+  .more summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .more summary::before {
+    content: '+';
+    display: inline-block;
+    width: 8px;
+    color: var(--muted);
+  }
+
+  .more[open] summary::before {
+    content: '−';
+  }
+
+  .more summary:hover {
+    color: var(--fg);
+  }
+
+  .more__count {
+    color: var(--muted);
+    opacity: 0.7;
+  }
+
+  .more[open] > .bullets {
+    margin-top: 10px;
+    animation: drop 220ms ease-out both;
+  }
+
+  @keyframes drop {
+    from {
+      opacity: 0;
+      transform: translateY(-4px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .more[open] > .bullets {
+      animation: none;
+    }
+  }
+
+  /* GitHub-style language bar */
+  .stack {
+    margin-top: 22px;
+  }
+
+  .stack__bar {
+    display: flex;
+    gap: 2px;
+    height: 6px;
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .stack__bar span {
+    min-width: 2px;
+    background: var(--c);
+  }
+
+  .stack__legend {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 4px 12px;
+    margin-top: 8px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .lang {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .lang::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--c);
+  }
+
+  /* Footer */
+  .foot {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 8px 16px;
+    margin-top: 48px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .foot__right {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 16px;
+  }
+
+  .foot a {
+    color: var(--muted);
+  }
+
+  .theme {
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    color: var(--muted);
+    text-shadow: inherit;
+    cursor: pointer;
+    text-decoration: underline;
+    text-decoration-color: var(--link-line);
+    text-underline-offset: 3px;
+  }
+
+  .theme:hover {
+    color: var(--fg);
+  }
+
+  /* The label names the theme you'd switch to. */
+  .to-dark {
+    display: none;
+  }
+
+  :global(:root[data-theme='light']) .to-light {
+    display: none;
+  }
+
+  :global(:root[data-theme='light']) .to-dark {
+    display: inline;
+  }
+
+  @media (max-width: 480px) {
+    .page {
+      padding-top: 48px;
+    }
+
+    .stack__legend {
+      display: grid;
+      grid-template-columns: repeat(3, max-content);
+      justify-content: space-between;
+    }
+  }
+</style>

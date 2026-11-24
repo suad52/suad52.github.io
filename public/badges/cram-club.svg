@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Cram Club: a stack of books on a library-lamp green tile, in the app's
+       chunky cartoon style (walnut outlines, cream / sun / orange). -->
+  <rect x="2" y="2" width="60" height="60" rx="14" fill="#7fb27a" stroke="#1f1a16" stroke-width="4"/>
+  <g stroke="#1f1a16" stroke-width="3.5" stroke-linejoin="round">
+    <!-- bottom book -->
+    <rect x="10" y="41" width="44" height="11" rx="2.5" fill="#e07a3f"/>
+    <path d="M45 41v11" fill="none"/>
+    <!-- middle book -->
+    <rect x="14" y="30" width="38" height="11" rx="2.5" fill="#f2cf7e"/>
+    <path d="M21 30v11" fill="none"/>
+    <!-- top book, tipped like it was dropped on the pile -->
+    <g transform="rotate(-9 31 24)">
+      <rect x="12" y="18" width="36" height="11" rx="2.5" fill="#fffefa"/>
+      <path d="M40 18v11" fill="none"/>
+    </g>
+  </g>
+</svg>

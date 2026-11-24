@@ -1,0 +1,35 @@
+---
+import '@fontsource-variable/jetbrains-mono';
+import '../styles/global.css';
+import Birds from '../components/Birds.astro';
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#050507" />
+    <meta name="color-scheme" content="dark light" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+    <script is:inline>
+      // Apply a saved light/dark choice before the first paint. Dark is the default.
+      try {
+        if (localStorage.getItem('theme') === 'light') document.documentElement.dataset.theme = 'light';
+      } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <Birds />
+    <slot />
+  </body>
+</html>

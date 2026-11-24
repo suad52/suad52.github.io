@@ -1,0 +1,61 @@
+---
+// The flocking-birds background (Vanta BIRDS on three.js r134), fixed behind the page.
+// It loads after the text so the page shows up first, and it stays a plain
+// background colour for people who ask for reduced motion.
+---
+
+<div id="birds" aria-hidden="true"></div>
+
+<script>
+  const BG = { dark: 0x050507, light: 0xf3f4fa };
+
+  const theme = () => (document.documentElement.dataset.theme === 'light' ? 'light' : 'dark');
+
+  async function start() {
+    const el = document.getElementById('birds');
+    if (!el || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const THREE = await import('three');
+    const mod: any = await import('vanta/dist/vanta.birds.min.js');
+    const BIRDS = mod.default?.default ?? mod.default ?? (window as any).VANTA?.BIRDS;
+    if (typeof BIRDS !== 'function') return;
+
+    const effect = BIRDS({
+      el,
+      THREE,
+      mouseControls: true,
+      touchControls: true,
+      gyroControls: false,
+      minHeight: 200.0,
+      minWidth: 200.0,
+      scale: 1.0,
+      scaleMobile: 1.0,
+      backgroundColor: BG[theme()],
+      color1: 0xa70303,
+      color2: 0x2779d2,
+      birdSize: 0.9,
+      // A calm flock: 2^4 x 2^4 = 256 birds instead of Vanta's default 1,024.
+      // Only whole numbers work (3 = 64, 4 = 256, 5 = 1,024).
+      quantity: 4,
+      speedLimit: 3,
+    });
+
+    // The theme toggle fires this so the canvas colour follows the page.
+    document.addEventListener('themechange', () => effect.setOptions({ backgroundColor: BG[theme()] }));
+  }
+
+  if ('requestIdleCallback' in window) requestIdleCallback(() => start(), { timeout: 1200 });
+  else setTimeout(start, 200);
+</script>
+
+<style>
+  #birds {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    /* Faint, so the birds sit in the background. The canvas colour matches the
+       page, so only the birds fade. */
+    opacity: 0.45;
+  }
+</style>
