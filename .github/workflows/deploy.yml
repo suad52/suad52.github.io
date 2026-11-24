@@ -1,4 +1,4 @@
-# Builds the site and publishes it to https://suad52.github.io on every push to main.
+# Builds the site and publishes it to https://suadalam.github.io on every push to main.
 name: Deploy to GitHub Pages
 
 on:

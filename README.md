@@ -1,6 +1,6 @@
-# suad52.github.io
+# suadalam.github.io
 
-My personal website, live at **https://suad52.github.io**. Built with [Astro](https://astro.build).
+My personal website, live at **https://suadalam.github.io**. Built with [Astro](https://astro.build).
 
 One narrow monospace column (JetBrains Mono) over a flock of birds ([Vanta BIRDS](https://www.vantajs.com/?effect=birds) on three.js r134). Organizations and projects show up as small inline badges with their own icon, tinted in their colour. Dark by default, with a light mode toggle in the footer that remembers your choice.
 

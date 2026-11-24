@@ -43,7 +43,7 @@ export const profile = {
     'Suad Alam studies Math + Business at Waterloo and Laurier, and makes Roblox games, iOS apps and web apps.',
   email,
   links: [
-    { label: 'github', href: 'https://github.com/suad52' },
+    { label: 'github', href: 'https://github.com/suadalam' },
     { label: 'linkedin', href: 'https://www.linkedin.com/in/suadalam/' },
     { label: 'devpost', href: 'https://devpost.com/suadalam2020' },
   ],
@@ -183,8 +183,8 @@ export const sections: Section[] = [
 
 /**
  * Languages across my public GitHub repos, by bytes. To recount:
- *   for r in $(gh repo list suad52 --visibility public --source --json name --jq '.[].name'); do
- *     gh api repos/suad52/$r/languages; echo; done
+ *   for r in $(gh repo list suadalam --visibility public --source --json name --jq '.[].name'); do
+ *     gh api repos/suadalam/$r/languages; echo; done
  * then add up the bytes per language. Colours are GitHub's.
  */
 export const languages = [
